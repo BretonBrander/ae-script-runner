@@ -8,7 +8,9 @@ const os = require('os');
  * Resolve the absolute path of a file to execute.
  * If a path is provided in the configuration it will be used. Otherwise the
  * currently open document is used. Unsaved documents are written to a
- * temporary file defined by the `aeScriptRunner.tempFile` setting.
+ * temporary file. For saved files, the temp file is created in the same
+ * directory as the original file. For untitled files, the temp file is
+ * created using the `aeScriptRunner.tempFile` setting.
  *
  * @param {vscode.WorkspaceConfiguration} config Current configuration for this extension
  * @returns {Promise<{path: string, isTemp: boolean}>} Object with absolute path to the script file and whether it's a temporary file
@@ -48,17 +50,29 @@ async function resolveScriptPath(config) {
     }
   }
   // Otherwise write the contents to a temporary file
-  let tempFile = config.get('tempFile');
-  // Expand ${workspaceFolder} placeholder
-  if (tempFile.includes('${workspaceFolder}')) {
-    const base = workspaceFolders && workspaceFolders.length > 0 ? workspaceFolders[0].uri.fsPath : os.tmpdir();
-    tempFile = tempFile.replace('${workspaceFolder}', base);
+  let tempFile;
+  let tempDir;
+  
+  // If the document has been saved before (not untitled), use its directory
+  if (!document.isUntitled && document.fileName) {
+    tempDir = path.dirname(document.fileName);
+    tempFile = path.join(tempDir, 'ae-temp-script.jsx');
+  } else {
+    // For untitled documents, fall back to workspace or temp directory
+    let configTempFile = config.get('tempFile');
+    // Expand ${workspaceFolder} placeholder
+    if (configTempFile.includes('${workspaceFolder}')) {
+      const base = workspaceFolders && workspaceFolders.length > 0 ? workspaceFolders[0].uri.fsPath : os.tmpdir();
+      configTempFile = configTempFile.replace('${workspaceFolder}', base);
+    }
+    tempFile = path.resolve(configTempFile);
+    tempDir = path.dirname(tempFile);
   }
-  const absoluteTemp = path.resolve(tempFile);
+  
   // Ensure directory exists
-  fs.mkdirSync(path.dirname(absoluteTemp), { recursive: true });
-  fs.writeFileSync(absoluteTemp, document.getText(), 'utf8');
-  return { path: absoluteTemp, isTemp: true };
+  fs.mkdirSync(tempDir, { recursive: true });
+  fs.writeFileSync(tempFile, document.getText(), 'utf8');
+  return { path: tempFile, isTemp: true };
 }
 
 /**

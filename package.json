@@ -7,7 +7,7 @@
   "engines": {
     "vscode": "^1.50.0"
   },
-  "categories": [
+  "categories": [asdf
     "Other"
   ],
   "activationEvents": [
@@ -38,7 +38,7 @@
         "aeScriptRunner.tempFile": {
           "type": "string",
           "default": "${workspaceFolder}/.vscode/ae-temp-script.jsx",
-          "description": "Path to a temporary file used when the active document has not yet been saved."
+          "description": "Path to a temporary file used when the active document is untitled (no saved location). For saved files, temporary files are created in the same directory as the file being edited."
         },
         "aeScriptRunner.executeFile": {
           "type": "string",

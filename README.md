@@ -17,6 +17,15 @@ _Just a quick vibe code project_
 
 ## Installation
 
+### Method 1: Command Palette (Recommended)
+
+1. Open VS Code
+2. Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows) to open Command Palette
+3. Type "Install Extension from Location" and select this extension folder
+5. The extension will be installed and activated automatically
+
+### Method 2: Manual Installation
+
 1. Copy this extension folder to your VS Code extensions directory:
    - **macOS**: `~/.vscode/extensions/`
    - **Windows**: `%USERPROFILE%\.vscode\extensions\`
