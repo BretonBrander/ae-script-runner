@@ -1,0 +1,75 @@
+{
+  "name": "ae-script-runner",
+  "displayName": "AE Script Runner",
+  "description": "Run Adobe After Effects ExtendScript code directly from Visual Studio Code.",
+  "version": "1.0.0",
+  "publisher": "user",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "categories": [asdf
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:aeScriptRunner.run",
+    "onCommand:aeScriptRunner.chooseVersion"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aeScriptRunner.run",
+        "title": "AE: Run ExtendScript in After Effects"
+      },
+      {
+        "command": "aeScriptRunner.chooseVersion",
+        "title": "AE: Choose After Effects Version"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "AE Script Runner configuration",
+      "properties": {
+        "aeScriptRunner.saveBeforeRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "Save the current file before sending it to After Effects."
+        },
+        "aeScriptRunner.tempFile": {
+          "type": "string",
+          "default": "${workspaceFolder}/.vscode/ae-temp-script.jsx",
+          "description": "Path to a temporary file used when the active document is untitled (no saved location). For saved files, temporary files are created in the same directory as the file being edited."
+        },
+        "aeScriptRunner.executeFile": {
+          "type": "string",
+          "default": "",
+          "description": "Optional: always execute this file instead of the current editor's document. Provide a relative or absolute path."
+        },
+        "aeScriptRunner.winAfterEffectsExe": {
+          "type": "string",
+          "default": "C:/Program Files/Adobe/Adobe After Effects 2025/Support Files/AfterFX.exe",
+          "description": "Windows only: path to the AfterFX.exe executable used to run scripts via the -r switch."
+        },
+        "aeScriptRunner.macAfterEffectsBundle": {
+          "type": "string",
+          "default": "auto",
+          "description": "macOS only: bundle identifier for After Effects. Use 'auto' for automatic detection, 'com.adobe.AfterEffects.application' for AE 2025+, 'com.adobe.AfterEffects' for AE 2024, or 'com.adobe.aftereffects' for legacy versions."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "aeScriptRunner.run",
+        "key": "ctrl+r",
+        "mac": "cmd+r",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "vsce": "^2.24.2"
+  }
+}
